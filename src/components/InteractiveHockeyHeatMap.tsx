@@ -41,7 +41,7 @@ const InteractiveHockeyHeatMap: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const data = await csvLoader.loadHockeyDataFromCsv('/hockey_data.csv');
+        const data = await csvLoader.loadHockeyDataFromCsv(`${process.env.PUBLIC_URL}/hockey_data.csv`);
         setShotData(data);
         
         const summary = csvLoader.getDatasetSummary(data);
