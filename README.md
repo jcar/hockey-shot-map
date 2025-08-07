@@ -1,6 +1,19 @@
 # 🏒 Hockey Shot Map
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_Application-blue?style=for-the-badge)](https://jcar.github.io/hockey-shot-map/)
+
 An interactive hockey shot visualization application that displays NHL shot data as hexagonal heat maps. Built with React, TypeScript, and D3.js, this tool provides real-time filtering and detailed shot analytics for hockey data analysis.
+
+## 🌟 **[► Try the Live Application](https://jcar.github.io/hockey-shot-map/)**
+
+**Experience the interactive heat map with real NHL data!** Click above to explore:
+- 🎯 **1,000+ Real NHL Shots** from multiple teams and games
+- 🔍 **Interactive Filtering** by team, period, and shot quality
+- 📊 **Hexagonal Heat Maps** showing shot density and danger zones
+- 💡 **Hover/Click Tooltips** with detailed shot information
+- 📱 **Mobile Responsive** design for all devices
+
+---
 
 ![Hockey Shot Map Demo](docs/demo-screenshot.png)
 
@@ -43,7 +56,7 @@ An interactive hockey shot visualization application that displays NHL shot data
 
 ```bash
 # Clone the repository
-git clone [your-repo-url]
+git clone https://github.com/jcar/hockey-shot-map.git
 cd hockey-shot-map
 
 # Install dependencies
@@ -53,7 +66,9 @@ npm install
 npm start
 ```
 
-The application will open at `http://localhost:3000`.
+The application will open at `http://localhost:3000/hockey-shot-map`.
+
+> 💡 **Prefer to skip setup?** [**Visit the live demo**](https://jcar.github.io/hockey-shot-map/) instead!
 
 ### Data Requirements
 
@@ -127,6 +142,15 @@ npm run lint
 npm run format
 ```
 
+### Deployment
+```bash
+# Deploy to GitHub Pages (automated via GitHub Actions)
+git push origin main
+
+# Manual deployment (backup method)
+npm run deploy
+```
+
 ## 🎨 Customization
 
 ### Adding New Data Sources
@@ -171,13 +195,24 @@ npm run format
 - **Efficient Re-rendering**: Optimized D3.js updates
 - **Touch Optimization**: Mobile-friendly interaction handling
 
+### Deployment
+- **GitHub Pages**: Automatically deployed on every push to main branch
+- **GitHub Actions**: CI/CD pipeline for build and deployment
+- **Live URL**: https://jcar.github.io/hockey-shot-map/
+
 ## 📈 Usage Examples
 
+### 🌐 **[Live Demo Usage](https://jcar.github.io/hockey-shot-map/)**
+The deployed application comes pre-loaded with 1,000+ real NHL shots. Simply visit the link and start exploring!
+
 ### Basic Usage
-Load the application and your data will be automatically processed. Use the filter controls to explore different aspects of the shot data.
+1. **[Open the live application](https://jcar.github.io/hockey-shot-map/)**
+2. **Explore the heat map** - hexagons show shot density across the rink
+3. **Use filters** to focus on specific teams, periods, or shot qualities
+4. **Hover/click** on hexagons and gold dots for detailed information
 
 ### Analysis Workflows
-1. **Team Analysis**: Select specific teams to compare shooting patterns
+1. **Team Analysis**: Select specific teams (BOS, TOR, MTL, etc.) to compare shooting patterns
 2. **Quality Analysis**: Use xG sliders to focus on high/low quality shots
 3. **Situational Analysis**: Filter by period to see pattern changes over game time
 4. **Danger Zone Analysis**: Toggle high-danger filter to focus on prime scoring areas
