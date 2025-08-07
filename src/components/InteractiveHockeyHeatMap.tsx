@@ -78,6 +78,14 @@ const InteractiveHockeyHeatMap: React.FC = () => {
       if (shot.x < -100 || shot.x > 10) return false; // X bounds: behind goal to past center
       if (shot.y < -50 || shot.y > 50) return false;  // Y bounds: rink width
       
+      // Filter out non-goal shots behind the goal line for visual clarity
+      // Only actual goals should appear behind the goal line (-89ft)
+      // Other shots from behind (wrap-arounds, rebounds) can be confusing visually
+      if (shot.x < -89) {
+        // Only allow actual goals behind the goal line
+        if (shot.shotOutcome !== 'GOAL') return false;
+      }
+      
       // Team filter
       if (filters.selectedTeams.length && !filters.selectedTeams.includes(shot.teamId || '')) {
         return false;

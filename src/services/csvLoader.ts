@@ -68,6 +68,7 @@ class CsvLoaderService {
       y: transformedY,
       xG: parseFloat(row.xG) || 0,
       shotType: row.shot_type || 'Unknown',
+      shotOutcome: row.shot_outcome as 'SHOT' | 'GOAL' | 'MISSED_SHOT' | 'BLOCKED_SHOT',
       period: parseInt(row.period) || 1,
       time: this.secondsRemainingToTime(parseInt(row.period_seconds_remaining) || 0),
       gameId: row.game_id,

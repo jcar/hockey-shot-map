@@ -6,6 +6,7 @@ export interface ShotData {
   y: number; // Distance from center line (feet) 
   xG: number; // Expected goals value (0-1)
   shotType?: string; // wrist, slap, snap, backhand, etc.
+  shotOutcome?: 'SHOT' | 'GOAL' | 'MISSED_SHOT' | 'BLOCKED_SHOT'; // Actual shot result
   period?: number; // 1, 2, 3, OT, SO
   time?: string; // Game time
   gameId?: string;
