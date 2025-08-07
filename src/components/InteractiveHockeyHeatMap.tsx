@@ -395,7 +395,7 @@ const InteractiveHockeyHeatMap: React.FC = () => {
         .text(stat);
     });
 
-  }, [filteredData, dataSummary, filters]);
+  }, [filteredData, dataSummary, filters, shotData.length]);
 
   // Click outside handler to close tooltip
   useEffect(() => {
