@@ -71,6 +71,13 @@ const InteractiveHockeyHeatMap: React.FC = () => {
     if (!shotData.length) return [];
 
     return shotData.filter(shot => {
+      // Filter out shots with unrealistic coordinates (outside hockey rink bounds)
+      // Hockey rink is 200ft long x 85ft wide
+      // Attacking zone is roughly from goal line (-89ft) to center line (0ft)
+      // Our data appears to be from one end, so we'll use reasonable bounds
+      if (shot.x < -100 || shot.x > 10) return false; // X bounds: behind goal to past center
+      if (shot.y < -50 || shot.y > 50) return false;  // Y bounds: rink width
+      
       // Team filter
       if (filters.selectedTeams.length && !filters.selectedTeams.includes(shot.teamId || '')) {
         return false;
@@ -153,19 +160,20 @@ const InteractiveHockeyHeatMap: React.FC = () => {
     const height = 700;
     const margin = { top: 80, right: 200, bottom: 80, left: 80 };
 
-    // Data coordinate ranges
-    const dataXMin = dataSummary.coordinateRanges.xMin;
-    const dataXMax = dataSummary.coordinateRanges.xMax;
-    const dataYMin = dataSummary.coordinateRanges.yMin;
-    const dataYMax = dataSummary.coordinateRanges.yMax;
+    // Use proper hockey rink dimensions instead of data extremes
+    // Hockey rink attacking zone from goal line to center
+    const rinkXMin = -100;  // Behind the goal
+    const rinkXMax = 10;    // Past center line
+    const rinkYMin = -50;   // Half rink width
+    const rinkYMax = 50;    // Half rink width
     
-    // Scale to fit the coordinate system of your data
+    // Scale to fit proper hockey rink coordinates
     const xScale = d3.scaleLinear()
-      .domain([dataXMin, dataXMax])
+      .domain([rinkXMin, rinkXMax])
       .range([margin.left, width - margin.right]);
     
     const yScale = d3.scaleLinear()
-      .domain([dataYMax, dataYMin])
+      .domain([rinkYMax, rinkYMin])
       .range([margin.top, height - margin.bottom]);
 
     const svg = d3.select(svgRef.current)
@@ -178,38 +186,61 @@ const InteractiveHockeyHeatMap: React.FC = () => {
     // Draw rink outline
     const rinkGroup = g.append('g').attr('class', 'rink');
     
-    // Main rink area
+    // Main rink area (proper hockey rink bounds)
     rinkGroup.append('rect')
-      .attr('x', xScale(dataXMin + 5))
-      .attr('y', yScale(dataYMax - 5))
-      .attr('width', xScale(dataXMax - 5) - xScale(dataXMin + 5))
-      .attr('height', yScale(dataYMin + 5) - yScale(dataYMax - 5))
+      .attr('x', xScale(rinkXMin + 2))
+      .attr('y', yScale(rinkYMax - 2))
+      .attr('width', xScale(rinkXMax - 2) - xScale(rinkXMin + 2))
+      .attr('height', yScale(rinkYMin + 2) - yScale(rinkYMax - 2))
       .attr('rx', 20)
       .attr('ry', 20)
       .attr('fill', 'white')
       .attr('stroke', '#000')
       .attr('stroke-width', 2);
 
-    // Goal line
+    // Goal line (11 feet from boards, which is around -89 feet from center)
     rinkGroup.append('line')
-      .attr('x1', xScale(-25))
-      .attr('y1', yScale(dataYMax - 5))
-      .attr('x2', xScale(-25))
-      .attr('y2', yScale(dataYMin + 5))
+      .attr('x1', xScale(-89))
+      .attr('y1', yScale(rinkYMax - 2))
+      .attr('x2', xScale(-89))
+      .attr('y2', yScale(rinkYMin + 2))
       .attr('stroke', 'red')
       .attr('stroke-width', 3);
 
-    // Goal crease
+    // Center line
+    rinkGroup.append('line')
+      .attr('x1', xScale(0))
+      .attr('y1', yScale(rinkYMax - 2))
+      .attr('x2', xScale(0))
+      .attr('y2', yScale(rinkYMin + 2))
+      .attr('stroke', 'blue')
+      .attr('stroke-width', 2);
+
+    // Goal crease (6 feet radius from goal line)
     rinkGroup.append('path')
       .attr('d', () => {
         const radius = Math.abs(yScale(0) - yScale(6));
-        const centerX = xScale(-25);
+        const centerX = xScale(-89);
         const centerY = yScale(0);
         return `M ${centerX} ${centerY - radius} A ${radius} ${radius} 0 0 0 ${centerX} ${centerY + radius} Z`;
       })
       .attr('fill', 'lightblue')
       .attr('stroke', 'blue')
       .attr('stroke-width', 2);
+
+    // Faceoff circles (high danger areas)
+    [-69, -25].forEach(x => {
+      [-20, 20].forEach(y => {
+        rinkGroup.append('circle')
+          .attr('cx', xScale(x))
+          .attr('cy', yScale(y))
+          .attr('r', Math.abs(yScale(0) - yScale(15)))
+          .attr('fill', 'none')
+          .attr('stroke', '#999')
+          .attr('stroke-width', 1)
+          .attr('stroke-dasharray', '3,3');
+      });
+    });
 
     // Create heat map
     const hexbin = d3hexbin()
